@@ -1,6 +1,7 @@
 package modules;
 import exceptions.InsufficientFundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import services.AccountManager;
 import services.TransactionManager;
@@ -38,6 +39,7 @@ public class TransferTest {
 
 
     @Test
+    @DisplayName("TransferFailsDueToSavingsMinBalance")
     void testTransferFailsDueToSavingsMinBalance() {
         double amountToTransfer = 500.01;
 
@@ -59,6 +61,7 @@ public class TransferTest {
 
     // --- Successful Test ---
     @Test
+    @DisplayName("SuccessfulTransferAndTransactionRecording")
     void testSuccessfulTransferAndTransactionRecording() {
         double amountToTransfer = 100.00;
 
