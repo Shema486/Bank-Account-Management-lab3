@@ -1,4 +1,5 @@
 package modules;
+import exceptions.InsufficientFundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.AccountManager;
@@ -35,24 +36,25 @@ public class TransferTest {
     }
 
 
+
     @Test
     void testTransferFailsDueToSavingsMinBalance() {
-        // Transfer amount that would leave the savings account with $499.99 (violates $500 min)
         double amountToTransfer = 500.01;
 
-        // NOTE: You need to mock or isolate the logic from Main.handleTransfer() here.
-        // For demonstration, we simulate the core logic:
-        boolean withdrawalSuccess = sourceSavings.withdraw(amountToTransfer);
+        InsufficientFundException ex = assertThrows(
+                InsufficientFundException.class,
+                () -> sourceSavings.withdraw(amountToTransfer)
+        );
 
-        // 1. Assert Withdrawal Failure
-        assertFalse(withdrawalSuccess, "Withdrawal should fail due to minimum balance rule.");
+        // Optional: verify message
+        assertEquals(
+                "Withdrawal denied! Minimum balance $500.0 must be maintained.",
+                ex.getMessage()
+        );
 
-        // 2. Assert Balances Are Unchanged
-        assertEquals(SOURCE_START_BALANCE, sourceSavings.getBalance(),  "Source balance must be unchanged.");
-        assertEquals(TARGET_START_BALANCE, targetChecking.getBalance(),  "Target balance must be unchanged.");
-
-        // 3. Assert NO Transactions Were Recorded (Assuming this is checked separately or via a manager method)
-        // You would typically assert that the transaction manager's count is zero.
+        // Balances must remain unchanged
+        assertEquals(SOURCE_START_BALANCE, sourceSavings.getBalance());
+        assertEquals(TARGET_START_BALANCE, targetChecking.getBalance());
     }
 
     // --- Successful Test ---

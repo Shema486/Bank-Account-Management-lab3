@@ -34,7 +34,7 @@ public class AccountManagerTest {
 
     @Test
     void testAddAccountIncrementsCount() {
-        assertEquals(2, manager.getAccountCount(), "Manager should contain exactly 2 accounts after setup.");
+        assertEquals(2, manager.getTotalAccounts(), "Manager should contain exactly 2 accounts after setup.");
     }
 
     @Test
