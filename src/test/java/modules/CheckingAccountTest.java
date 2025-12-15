@@ -1,5 +1,6 @@
 package modules;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,12 +20,14 @@ public class CheckingAccountTest {
     }
 
     @Test
+    @DisplayName("WithdrawalIntoNegativeButWithinLimit")
     void testWithdrawalIntoNegativeButWithinLimit() {
         // Withdraw $1200.00. New balance should be -$700.00 (Within -$1000 limit).
         assertTrue(account.withdraw(1200.00), "Withdrawal into overdraft should succeed if within limit.");
         assertEquals(-700.00, account.getBalance(), 0.001, "Balance should be correct negative value.");
     }
 
+    @DisplayName("WithdrawalExactlyToLimit")
     @Test
     void testWithdrawalExactlyToLimit() {
         // Account has $500.00. Withdraw $1500.00. New balance should be -$1000.00 (Exactly the limit).
@@ -35,6 +38,7 @@ public class CheckingAccountTest {
 
 
     @Test
+    @DisplayName("DepositWhenOverdrawn")
     void testDepositWhenOverdrawn() {
         // Put the account into overdraft first
         account.withdraw(700.00); // Balance is now -$200.00
