@@ -6,6 +6,7 @@ import modules.SavingsAccount;
 import modules.Customer;
 import modules.RegularCustomer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,10 +22,6 @@ public class AccountManagerTest {
         manager = new AccountManager();
         testCustomer = new RegularCustomer("Test Customer", 30, "555-0000", "Address");
 
-        // The manager uses a static counter for account IDs./
-        // We'll rely on the actual IDs being created sequentially (e.g., ACC001, ACC002)
-        // Note: For deterministic testing, you might reset static counters,/
-        // but for integration testing, we use the actual objects.
         acc1 = new SavingsAccount(testCustomer, 5000.00);
         acc2 = new CheckingAccount(testCustomer, 100.00);
 
@@ -33,11 +30,13 @@ public class AccountManagerTest {
     }
 
     @Test
+    @DisplayName("AddAccountIncrementsCount")
     void testAddAccountIncrementsCount() {
         assertEquals(2, manager.getTotalAccounts(), "Manager should contain exactly 2 accounts after setup.");
     }
 
     @Test
+    @DisplayName("FindExistingAccount")
     void testFindExistingAccount() {
         // Test finding the first account by its generated ID
         Account foundAccount = manager.findAccount(acc1.getAccountNumber());
@@ -46,6 +45,7 @@ public class AccountManagerTest {
     }
 
     @Test
+    @DisplayName("FindNonExistingAccount")
     void testFindNonExistingAccount() {
         // Test searching for a synthetic ID that does not exist
         Account foundAccount = manager.findAccount("ACC999");
