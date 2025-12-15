@@ -1,5 +1,7 @@
 package modules;
+import exceptions.InsufficientFundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +20,7 @@ public class SavingsAccountTest {
     }
 
     @Test
+    @DisplayName("SuccessfulWithdrawalAboveMinimum")
     void testSuccessfulWithdrawalAboveMinimum() {
         // Withdraw $400.00. New balance should be $600.00 (Above $500 min).
         assertTrue(account.withdraw(400.00), "Withdrawal should succeed.");
@@ -25,6 +28,7 @@ public class SavingsAccountTest {
     }
 
     @Test
+    @DisplayName("WithdrawalFailsBelowMinimum")
     void testWithdrawalExactlyToMinimum() {
         // Withdraw $500.00. New balance should be $500.00 (Exactly the minimum).
         assertTrue(account.withdraw(500.00), "Withdrawal to minimum should succeed.");
@@ -32,21 +36,34 @@ public class SavingsAccountTest {
     }
 
     @Test
+    @DisplayName("WithdrawalFailsBelowMinimum")
     void testWithdrawalFailsBelowMinimum() {
-        // Withdraw $500.01. New balance would be $499.99 (Below $500 min).
-        assertFalse(account.withdraw(500.01), "Withdrawal below minimum should fail.");
+        Exception exception = assertThrows(InsufficientFundException.class, () -> {
+            account.withdraw(500.01);
+        });
+
+        assertEquals("Withdrawal denied! Minimum balance $500.0 must be maintained.",
+                exception.getMessage());
+
         // Balance should remain unchanged
-        assertEquals(1000.00, account.getBalance(),  "Balance should be unchanged after failed withdrawal.");
+        assertEquals(1000.00, account.getBalance(), "Balance should remain unchanged after failed withdrawal.");
     }
 
+
     @Test
+    @DisplayName("WithdrawalFailsForInsufficientFunds")
     void testWithdrawalFailsForInsufficientFunds() {
-        // Test a withdrawal that is larger than the starting balance.
-        assertFalse(account.withdraw(1001.00), "Withdrawal with insufficient funds should fail (violates min balance rule).");
-        assertEquals(1000.00, account.getBalance(),  "Balance must be unchanged.");
+        Exception exception = assertThrows(InsufficientFundException.class, () -> {
+            account.withdraw(600.01);
+        });
+
+        assertEquals("Withdrawal denied! Minimum balance $500.0 must be maintained.",
+                exception.getMessage());
     }
 
+
     @Test
+    @DisplayName("SuccessfulDeposit")
     void testSuccessfulDeposit() {
         // Deposit $50.00
         assertTrue(account.deposit(50.00), "Deposit should succeed.");
