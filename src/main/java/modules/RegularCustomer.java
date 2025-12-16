@@ -1,7 +1,4 @@
 package modules;
-
-import modules.Customer;
-
 import java.io.Serializable;
 
 public class RegularCustomer extends Customer implements Serializable {
