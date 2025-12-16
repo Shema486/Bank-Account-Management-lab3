@@ -3,5 +3,5 @@ ACC002,SHEMA,3500.0,SavingsAccount,ACTIVE,3.5,500.0
 ACC003,Bruce,6600.0,SavingsAccount,ACTIVE,3.5,500.0
 ACC004,Ange,5190.0,CheckingAccount,ACTIVE,1000.0,10.0
 ACC005,Peace,6490.0,CheckingAccount,ACTIVE,1000.0,10.0
-ACC006,alphonse,20910.0,CheckingAccount,ACTIVE,1000.0,10.0
-ACC007,hdjjee,83738.0,SavingsAccount,ACTIVE,3.5,500.0
+
+
