@@ -45,7 +45,7 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
     public abstract String getAccountType();
     public abstract boolean withdraw(double amount);
 
-    public synchronized boolean deposit(double amount) {
+    public  synchronized boolean deposit(double amount) {
         if (amount <= 0) return false;
         this.balance += amount;
         return true;
@@ -73,32 +73,39 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
     }
 
     public static Account fromString(String line) {
-        String[] p = line.split(",");
-        if (p.length < 5) return null;
+        try {
+            String[] p = line.split(",");
+            if (p.length < 5) return null;
 
-        String accNo = p[0];
-        String customerName = p[1];
-        double balance = Double.parseDouble(p[2]);
-        String type = p[3];
-        String status = p[4];
+            String accNo = p[0];
+            String customerName = p[1];
+            double balance = Double.parseDouble(p[2]);
+            String type = p[3];
+            String status = p[4];
 
-        Customer c = new RegularCustomer(customerName); // Adjust if you store more customer info
+            Customer c = new RegularCustomer(customerName); // Adjust if you store more customer info
 
-        switch (type) {
-            case "SavingsAccount" -> {
-                double rate = Double.parseDouble(p[5]);
-                double minBalance = Double.parseDouble(p[6]);
-                return new SavingsAccount(accNo, c, balance, rate, minBalance, status);
+            switch (type) {
+                case "SavingsAccount" -> {
+                    double rate = Double.parseDouble(p[5]);
+                    double minBalance = Double.parseDouble(p[6]);
+                    return new SavingsAccount(accNo, c, balance, rate, minBalance, status);
+                }
+                case "CheckingAccount" -> {
+                    double overdraft = Double.parseDouble(p[5]);
+                    double fee = Double.parseDouble(p[6]);
+                    return new CheckingAccount(accNo, c, balance, overdraft, fee, status);
+                }
+                default -> {
+                    System.err.println("Unknown account type: " + type);
+                    return null;
+                }
+
+
             }
-            case "CheckingAccount" -> {
-                double overdraft = Double.parseDouble(p[5]);
-                double fee = Double.parseDouble(p[6]);
-                return new CheckingAccount(accNo, c, balance, overdraft, fee, status);
-            }
-            default -> {
-                System.err.println("Unknown account type: " + type);
-                return null;
-            }
+        } catch (Exception e) {
+            System.out.println("Invalid account record: " + line);
+            return null; // acceptable only if filtered later
         }
     }
 }
