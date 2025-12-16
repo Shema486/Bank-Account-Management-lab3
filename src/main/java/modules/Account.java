@@ -45,7 +45,7 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
     public abstract String getAccountType();
     public abstract boolean withdraw(double amount);
 
-    public boolean deposit(double amount) {
+    public synchronized boolean deposit(double amount) {
         if (amount <= 0) return false;
         this.balance += amount;
         return true;
