@@ -43,7 +43,7 @@ public class SavingsAccount extends Account implements Serializable {
     }
 
     @Override
-    public boolean withdraw(double amount) {
+    public synchronized boolean withdraw(double amount) {
         if (balance - amount >= minimumBalance) {
             balance -= amount;
             return true;
