@@ -11,6 +11,7 @@ public class ValidationUtils {
         System.out.println("\npress enter to continue...\n");
         scanner.nextLine();
     }
+    //input for integer
     public  int getIntInput(String prompt, int min, int max) {
         while (true) {
             try {
@@ -31,6 +32,7 @@ public class ValidationUtils {
             }
         }
     }
+    // input for double
     public double getDoubleInput(String prompt, double min) {
         while (true) {
             try {
@@ -51,6 +53,7 @@ public class ValidationUtils {
             }
         }
     }
+    // input for String
     public String getStringInput(String prompt, String regex, String errorMsg) {
         while (true) {
             System.out.print(prompt);
