@@ -10,7 +10,7 @@ public class CheckingAccount extends Account implements Serializable {
     private double overdraftLimit;
     private double monthlyFee;
 
-    // Constructor for NEW accounts
+    // Constructor for NEW account
     public CheckingAccount(Customer customer, double balance) {
         super(customer, balance);
         this.overdraftLimit = 1000;
