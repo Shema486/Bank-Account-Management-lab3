@@ -8,25 +8,24 @@ public class PremiumCustomer extends Customer implements Serializable {
     // Private field specific to Premium customers [cite: 378]
     private  final double minimumBalance ; // Minimum to maintain premium status
 
-    // Constructor [cite: 378]
+    // Constructor
     public PremiumCustomer(String name, int age, String contact, String address) {
         super(name, age, contact, address);
         this.minimumBalance = 10000;
     }
 
-    // Special method for benefits (waived fees) [cite: 381]
+    // Special method for benefits (waived fees)
     public boolean hasWaivedFees() {
-        // Premium customers always have waived monthly fees
         return true;
     }
 
-    // Override the abstract method to specify the type [cite: 380]
+    // Override the abstract method to specify the type
     @Override
     public String getCustomerType() {
         return "Premium";
     }
 
-    // Override to show customer info plus premium benefits [cite: 380]
+    // Override to show customer info plus premium benefits
     @Override
     public void displayCustomerDetails() {
         System.out.println("Customer ID: " + getCustomerId());
