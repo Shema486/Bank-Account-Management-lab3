@@ -38,7 +38,6 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
     public double getBalance() { return balance; }
     public Customer getCustomer() { return customer; }
     public String getAccountNumber() { return accountNumber; }
-    public static void setAccountCounter(int value) { accountCounter = value; }
 
     public abstract void displayAccountDetails();
     public abstract String getAccountType();
