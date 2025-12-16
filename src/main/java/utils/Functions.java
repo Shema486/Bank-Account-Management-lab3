@@ -252,13 +252,13 @@ public class Functions {
 
     }
 
-    // NEW: Handles saving data
+    //  Handles saving data
     public void handleSaveData() {
         accountManager.saveAccounts();
         transactionManager.saveTransaction();
         validationUtils.enterToContinue();
     }
-
+    //  Handles load data
     public void handleLoadData() {
         accountManager.loadAccounts();
         transactionManager.loadTransaction();
