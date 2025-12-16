@@ -17,7 +17,7 @@ public class SavingsAccount extends Account implements Serializable {
         this.minimumBalance = 500;
     }
 
-    // Constructor for loading from file
+    // Constructor for loading from files
     public SavingsAccount(String accNo, Customer c, double balance,
                           double rate, double minBalance, String status) {
         super(accNo, c, balance, status);
