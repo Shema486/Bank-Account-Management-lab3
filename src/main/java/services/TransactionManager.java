@@ -10,7 +10,7 @@ import java.util.List;
 import modules.Transaction;
 
 public class TransactionManager  {
-    // 1. DIP: Depend on the List abstraction, not the concrete array/ArrayList.
+    //  Depend on the List abstraction, not the concrete array/ArrayList.
     // This is the High-Level Module depending on Abstraction.
     private  List<Transaction> transactions;
 
