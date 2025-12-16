@@ -21,7 +21,7 @@ public class TransactionManager  {
 
     // SRP: Responsibility is purely adding the transaction object.
     // Array size checking is now handled automatically by the List.
-    public void addTransaction(Transaction newTransaction) {
+    public synchronized void addTransaction(Transaction newTransaction) {
         this.transactions.add(newTransaction);
     }
 
