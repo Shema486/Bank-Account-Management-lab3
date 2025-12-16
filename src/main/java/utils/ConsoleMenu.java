@@ -23,7 +23,7 @@ public class ConsoleMenu {
 
     }
     public  void managerAccount(){
-//        functions.initializeData();
+
         int choice =0;
         do {
             System.out.println("Account Management_____________");
@@ -48,12 +48,11 @@ public class ConsoleMenu {
 
                         break;
                     default:
-                        // Input Validation (US-5 Acceptance Criteria)
                         System.out.println("Invalid choice. Please enter a number between 1 and 4.");
                         break;
                 }
             }catch (InputMismatchException e){
-                // Input Validation for non-integer inputs (US-5 Acceptance Criteria)
+
                 System.out.println("Invalid input. Please enter a valid number.");
                 scanner.nextLine();
 
