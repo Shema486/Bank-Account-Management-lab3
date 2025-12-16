@@ -77,6 +77,7 @@ public class Transaction implements Serializable {
 
 
 
+    //fromString to object
     public static Transaction fromString(String line) {
         String[] p = line.split(",");
 
