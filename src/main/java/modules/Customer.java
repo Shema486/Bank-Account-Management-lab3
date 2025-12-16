@@ -15,7 +15,7 @@ public abstract class Customer implements Serializable {
     private  String contact;
     private  String address;
 
-    //constructor
+    //constructors
     public Customer(String name, int age, String contact, String address) {
         customerCounter++;
         this.customerId =String.format("CUS%03d",customerCounter) ;
