@@ -262,7 +262,7 @@ public class Functions {
     public void handleLoadData() {
         accountManager.loadAccounts();
         transactionManager.loadTransaction();
-//        validationUtils.enterToContinue();
+//
     }
 
 }
