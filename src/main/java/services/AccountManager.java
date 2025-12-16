@@ -77,7 +77,7 @@ public class AccountManager  {
         File file = new File(filePath);
         File parentDir = file.getParentFile();
         try {
-            // Example in AccountManager or TransactionManager
+
             if (parentDir != null && !parentDir.exists()) {
                 // mkdirs() creates the directory and any necessary parent directories
                 if (!parentDir.mkdirs()) {
