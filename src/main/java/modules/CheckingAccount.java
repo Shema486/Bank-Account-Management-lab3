@@ -43,7 +43,7 @@ public class CheckingAccount extends Account implements Serializable {
     }
 
     @Override
-    public boolean withdraw(double amount) throws OverdraftExceededException {
+    public synchronized boolean withdraw(double amount) throws OverdraftExceededException {
         double newBalance = balance - amount;
         if (newBalance < -overdraftLimit)
             throw new OverdraftExceededException(
