@@ -20,25 +20,18 @@ public class AccountManager  {
     public AccountManager() {
         this.accounts = new ArrayList<>();
     }
-
-    // Method for US-2 (Create Account)
     public void addAccount(Account newAccount) {
         this.accounts.add(newAccount);
     }
 
-    // Method for US-3 (Process Transaction) - DSA: Linear Search
-    // CORRECTED LOGIC: The return null must be outside the loop.
     public Account findAccount(String accountNumber) {
         for (Account account : accounts) {
             if (account.getAccountNumber().equalsIgnoreCase(accountNumber)) {
-                return account; // Return immediately if found
+                return account;
             }
         }
-        // Only return null if the entire list has been searched and the account wasn't found.
         return null;
     }
-
-    // Method to calculate total balance (Method un-nested)
     public double getTotalBalance() {
         double total = 0;
         for (Account account : accounts) {
@@ -47,27 +40,26 @@ public class AccountManager  {
         return total;
     }
 
-    // Method for US-1 (View Accounts) (Method un-nested)
     public void viewAllAccounts() {
-        // Uses the correct List method (.size())
+
         if (accounts.size() == 0) {
             System.out.println("No accounts in the bank.");
             return;
         }
 
         System.out.println("----- All Bank Accounts -----");
-        // Uses the idiomatic enhanced for loop for iteration
+
         for (Account account : accounts) {
-            // Assuming Account has a displayAccountDetails() method
-            account.displayAccountDetails();
+            if (account != null) {
+                account.displayAccountDetails();
+            }
         }
         System.out.println("Total accounts: " + getTotalAccounts());
         System.out.println("Total Bank balance: $" + getTotalBalance());
     }
 
-    // Getter (Method un-nested)
+    // Getter
     public int getTotalAccounts() {
-        // Uses the correct List method (.size())
         return accounts.size();
     }
     public void saveAccounts() {
@@ -107,6 +99,7 @@ public class AccountManager  {
                     Files.readAllLines(path)
                             .stream()
                             .map(Account::fromString)
+                            .filter(account -> account != null)
                             .toList()
             );
 
