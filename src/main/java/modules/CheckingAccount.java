@@ -57,7 +57,7 @@ public class CheckingAccount extends Account implements Serializable {
         balance -= monthlyFee;
         return balance;
     }
-
+    //toString
     @Override
     public String toString() {
         return super.toString() + "," + overdraftLimit + "," + monthlyFee;
