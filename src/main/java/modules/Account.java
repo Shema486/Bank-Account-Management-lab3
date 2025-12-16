@@ -34,11 +34,13 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
         this.status = status;
     }
 
+    //getter
     public String getStatus() { return status; }
     public double getBalance() { return balance; }
     public Customer getCustomer() { return customer; }
     public String getAccountNumber() { return accountNumber; }
 
+    //abstracts
     public abstract void displayAccountDetails();
     public abstract String getAccountType();
     public abstract boolean withdraw(double amount);
