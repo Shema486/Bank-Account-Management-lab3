@@ -6,33 +6,30 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Service class to manage bank accounts.
- * Provides functionality to add, find, view, calculate totals,
- * and persist accounts to a file.
+ * Service class to manage bank accounts using HashMap.
+ * Demonstrates use of Streams for totals, listing, and filtering.
  */
 public class AccountManager {
 
-    /** List that stores all Account objects in memory. */
-    private List<Account> accounts;
+    /** Stores accounts by account number for fast lookup */
+    private Map<String, Account> accountsMap;
 
-    /**
-     * Constructs a new AccountManager with an empty account list.
-     */
+    /** Constructor */
     public AccountManager() {
-        this.accounts = new ArrayList<>();
+        accountsMap = new HashMap<>();
     }
 
     /**
      * Adds a new account to the manager.
+     * If the account number already exists, it will be overwritten.
      *
      * @param newAccount the Account object to be added
      */
     public void addAccount(Account newAccount) {
-        this.accounts.add(newAccount);
+        accountsMap.put(newAccount.getAccountNumber(), newAccount);
     }
 
     /**
@@ -42,56 +39,50 @@ public class AccountManager {
      * @return the Account object if found, otherwise null
      */
     public Account findAccount(String accountNumber) {
-        return accounts.stream()
-                .filter(a -> a.getAccountNumber().equalsIgnoreCase(accountNumber))
-                .findFirst()
-                .orElse(null);
+        return accountsMap.get(accountNumber);
     }
 
     /**
-     * Calculates the total balance of all accounts.
+     * Calculates the total balance of all accounts using Stream API.
      *
      * @return the sum of balances of all accounts
      */
     public double getTotalBalance() {
-        return accounts.stream()
+        return accountsMap.values()
+                .stream()
                 .mapToDouble(Account::getBalance)
                 .sum();
     }
 
     /**
-     * Displays all accounts in a formatted manner.
+     * Displays all accounts in a formatted manner using Stream API.
      * Also prints the total number of accounts and total bank balance.
-     * Uses Stream API to iterate through accounts.
      */
     public void viewAllAccounts() {
-        if (accounts.isEmpty()) {
+        if (accountsMap.isEmpty()) {
             System.out.println("No accounts in the bank.");
             return;
         }
 
         System.out.println("----- All Bank Accounts -----");
 
-        accounts.stream()
-                .filter(account -> account != null)
+        // Stream to display all accounts
+        accountsMap.values()
+                .stream()
+                .filter(Objects::nonNull)
                 .forEach(Account::displayAccountDetails);
 
         System.out.println("Total accounts: " + getTotalAccounts());
         System.out.println("Total Bank balance: $" + getTotalBalance());
     }
 
-    /**
-     * Returns the total number of accounts managed.
-     *
-     * @return the count of accounts
-     */
+    /** Returns the total number of accounts managed. */
     public int getTotalAccounts() {
-        return accounts.size();
+        return accountsMap.size();
     }
 
     /**
-     * Saves all accounts to a text file.
-     * Creates necessary directories if they do not exist.
+     * Saves all accounts to a text file using Stream API.
      */
     public void saveAccounts() {
         String filePath = "src/main/java/data/accounts.txt";
@@ -104,7 +95,9 @@ public class AccountManager {
                     return;
                 }
             }
-            List<String> lines = accounts.stream()
+
+            List<String> lines = accountsMap.values()
+                    .stream()
                     .map(Account::toString)
                     .toList();
 
@@ -116,9 +109,7 @@ public class AccountManager {
     }
 
     /**
-     * Loads accounts from a text file and populates the internal list.
-     * Existing accounts are replaced by the loaded accounts.
-     * Filters out null accounts during loading.
+     * Loads accounts from a text file and populates the internal map using simple logic.
      */
     public void loadAccounts() {
         try {
@@ -126,13 +117,13 @@ public class AccountManager {
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) return;
 
-            accounts = new ArrayList<>(
-                    Files.readAllLines(path)
-                            .stream()
-                            .map(Account::fromString)
-                            .filter(account -> account != null)
-                            .toList()
-            );
+            accountsMap.clear();
+
+            Files.readAllLines(path)
+                    .stream()
+                    .map(Account::fromString)
+                    .filter(Objects::nonNull)
+                    .forEach(account -> accountsMap.put(account.getAccountNumber(), account));
 
             System.out.println("Accounts loaded (text format).");
         } catch (Exception e) {
