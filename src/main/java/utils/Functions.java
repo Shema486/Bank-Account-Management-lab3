@@ -4,6 +4,7 @@ import modules.*;
 import services.AccountManager;
 import services.TransactionManager;
 
+
 public class Functions {
     static ValidationUtils validationUtils = new ValidationUtils();
     static AccountManager accountManager = new AccountManager();
@@ -251,6 +252,35 @@ public class Functions {
         transactionManager.addTransaction(new Transaction(acc5.getAccountNumber(), "WITHDRAW", 1500.00, acc5.getBalance()));
 
     }
+    public   void runConcurrentSimulation() {
+        System.out.println("\nRunning concurrent transaction simulation...");
+        String accNo = validationUtils.getStringInput("Enter account for simulation (ACC001): ", "^ACC\\d{3}$", "Invalid account format.");
+        Account acc = accountManager.findAccount(accNo);
+
+        if (acc == null) {System.out.println("Account not found.");
+            return;
+        }
+        Thread t1 = new Thread(new TransactionConcurrencySimulator(acc, 500, TransactionType.DEPOSIT,transactionManager), "Thread-1");
+        Thread t2 = new Thread(new TransactionConcurrencySimulator(acc, 300, TransactionType.DEPOSIT,transactionManager), "Thread-2");
+        Thread t3 = new Thread(new TransactionConcurrencySimulator(acc, 200, TransactionType.WITHDRAW,transactionManager), "Thread-3");
+        try {
+            t1.start();
+            t2.start();
+            t3.start();
+
+            t1.join();
+            t2.join();
+            t3.join();
+
+            System.out.println("✓ Thread-safe operations completed successfully.");
+            System.out.printf("Final Balance for %s: $%.2f%n",
+                    acc.getAccountNumber(), acc.getBalance());
+
+        } catch (InterruptedException e) {
+            System.out.println("Simulation interrupted.");
+        }
+    }
+
 
     //  Handles saving data
     public void handleSaveData() {
@@ -262,7 +292,7 @@ public class Functions {
     public void handleLoadData() {
         accountManager.loadAccounts();
         transactionManager.loadTransaction();
-//
+
     }
 
 }
