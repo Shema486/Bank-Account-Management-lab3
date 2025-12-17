@@ -1,93 +1,135 @@
+# Bank Account Management — Lab 3
 
-# Bank-Account-Management-2
-🏦 Bank Management System
-Java • OOP • SOLID • DS&A • JUnit Testing
+the Lab 3 implementation of a console-based **Bank Management System** written in Java.
 
-📘 Overview
-This project is a console-based Bank Management System built using Java, demonstrating:
-🧱 Object-Oriented Programming
-📐 SOLID Principles
-⚙️ Data Structures & Algorithms
-🧪 JUnit Testing
-The system manages Customers, Accounts, and Transactions, supporting operations such as deposits, withdrawals, account creation, transaction history, and summary reports.
+---
 
-🚀 Features
-🏦 Account Management
-Create Savings and Checking accounts
-Auto-generated Account IDs
-View all accounts
-Search accounts (Linear Search)
+##  Overview
+This lab implements a minimal banking model that demonstrates:
+- Object-oriented design 
+- Validation and domain exceptions
+- Simple file-based persistence for demonstration purposes
+- Unit testing for correctness
+- Concurrency simulation to exercise thread-safety
 
-💸 Transaction Processing
-Deposit
-Withdraw
-Balance validation rules
-Overdraft handling
-Save every transaction with timestamp
+### Capabilities
+- Create and manage **Savings** and **Checking** accounts
+- Deposit, withdraw, and transfer funds with validation and exception handling
+- Record transactions with timestamps and view transaction history (newest first)
+- Persist account and transaction data to simple  text files
+- Simulate concurrent transactions to validate basic synchronization
 
-📜 Transaction History
-View full transaction history per account
-Newest → Oldest order
-Summary:
-Total Deposits
-Total Withdrawals
-Net Change
+---
 
-🧠 OOP Concepts Used
-Concept	: How It’s Used
-Inheritance	SavingsAccount and CheckingAccount inherit from Account
-Polymorphism	Overridden withdraw() and deposit() behave differently
-Encapsulation	Private fields + getters/setters
-Abstraction	Base Account class defines shared functionality
+##  Primary Components
+- **`modules`** — domain objects: `Account`, `SavingsAccount`, `CheckingAccount`, `Customer`, `Transaction`, `TransactionType`, `TransactionConcurrencySimulator`
+- **`services`** — business logic: `AccountManager`, `TransactionManager`
+- **`utils`** — CLI and helpers: `ConsoleMenu`, `Functions`, `ValidationUtils`
+- **`exceptions`** — domain exceptions used for validation and business rules
+- **`interfaces`** — `Depositable`, `Withdrawable`, `Transactable`
 
-🧩 SOLID Principles Applied
-Principle	Implementation
-S – Single Responsibility	Managers handle data; Accounts handle logic
-O – Open/Closed	Easily add new account types without modifying the core system
-L – Liskov Substitution: All account types behave as Account safely
-I – Interface Segregation	(If included) separate interfaces: Depositable, Withdrawable
-D – Dependency Inversion	Managers depend on List<> abstraction, not ArrayList
+---
 
-🧠 Data Structures & Algorithms
-✔️ 1. ArrayList
-Used to store:
-Accounts
-Transactions
-✔️ 2. Linear Search
-Used to find accounts:
-for (Account account: accounts) {
-    if (account.getAccountNumber().equalsIgnoreCase(accountNumber)) {
-        return account;
-    }
-}
+##  Project Structure
+```plaintext
+BankAccountManagement-Lab3/
+├── pom.xml
+├── README.md
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── Main.java
+│   │   │   ├── data/
+│   │   │   │   ├── accounts.txt
+│   │   │   │   └── transactions.txt
+│   │   │   ├── exceptions/
+│   │   │   │   ├── InsufficientFundException.java
+│   │   │   │   ├── InvalidAmountException.java
+│   │   │   │   └── OverdraftExceededException.java
+│   │   │   ├── interfaces/
+│   │   │   │   ├── Depositable.java
+│   │   │   │   ├── Transactable.java
+│   │   │   │   └── Withdrawable.java
+│   │   │   ├── modules/
+│   │   │   │   ├── Account.java
+│   │   │   │   ├── SavingsAccount.java
+│   │   │   │   ├── CheckingAccount.java
+│   │   │   │   ├── Customer.java
+│   │   │   │   ├── PremiumCustomer.java
+│   │   │   │   ├── RegularCustomer.java
+│   │   │   │   ├── Transaction.java
+│   │   │   │   ├── TransactionType.java
+│   │   │   │   └── TransactionConcurrencySimulator.java
+│   │   │   ├── services/
+│   │   │   │   ├── AccountManager.java
+│   │   │   │   └── TransactionManager.java
+│   │   │   └── utils/
+│   │   │       ├── ConsoleMenu.java
+│   │   │       ├── Functions.java
+│   │   │       └── ValidationUtils.java
+│   └── test/
+│       └── java/
+│           ├── modules/
+│           │   ├── CheckingAccountTest.java
+│           │   ├── SavingsAccountTest.java
+│           │   └── TransferTest.java
+│           └── services/
+│               ├── AccountManagerTest.java
+│               └── TransactionManagerTest.java
 
-✔️ 3. Reverse Iteration
-Show newest transactions first:
-for (int i = history.size() - 1; i >= 0; i--) {
-    history.get(i).displayTransactionDetails();
-}
 
-✔️ 4. Composition / Aggregation
-AccountManager has a list of Accounts
-TransactionManager has a list of Transactions
 
-🧪 JUnit Tests
-Tests ensure the system is reliable and correct.
-Unit Tests Included:
-SavingsAccountTest
-CheckingAccountTest
-AccountManagerTest
-TransactionManagerTest
 
-Tests Cover:
-Minimum balance rules
-Overdraft limits
-Finding accounts
-Deposits & withdrawals
-Transaction filtering
-Calculation of totals
-Net balance change
+```
 
-=======
-# Bank-Account-Management-lab3
+---
+
+## Notable Implementation Details
+
+- **Account Hierarchy**:
+    - `Account` is abstract with synchronized `deposit()` and abstract `withdraw()` implemented per account type.
+    - `SavingsAccount` and `CheckingAccount` enforce rules like minimum balances, interest, overdraft limits, and fees.
+
+- **Transactions**:
+    - `Transaction` objects are immutable, include an auto-generated ID, timestamp, and CSV-style `toString()` for persistence.
+    - `TransactionManager` manages transactions in-memory, supports reporting, and provides thread-safe addition with `synchronized addTransaction()`.
+
+- **Concurrency Simulation**:
+    - `TransactionConcurrencySimulator` synchronizes on `Account` when performing deposits/withdrawals and logs transactions.
+    - Demonstrates basic locking but is not production-grade concurrency control.
+
+- **Persistence**:
+    - Accounts and transactions are saved as CSV-like text files under `src/main/java/data/`.
+    - Loading and saving use `Stream` and simple file I/O.
+
+---
+
+## Concurrency and Safety Notes
+
+- Thread-safety is illustrated by:
+    - Synchronizing `Account` operations
+    - Synchronizing transaction list updates
+
+> Note: These patterns are suitable for teaching labs. Production systems require database-backed transactions and proper transactional isolation.
+
+---
+
+## Prerequisites
+
+- Java 11+ JDK
+- Apache Maven 3.x
+
+---
+
+## Setup Instructions
+
+1. Ensure `JAVA_HOME` points to a Java 11+ JDK and `mvn` is on your PATH.
+2. Optional: Reset demo data by replacing `src/main/java/data/accounts.txt` and `transactions.txt`.
+
+---
+
+## Build
+
+```bash
+mvn -q package
 
