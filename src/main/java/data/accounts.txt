@@ -1,7 +1,6 @@
 ACC001,Alice,5500.0,SavingsAccount,ACTIVE,3.5,500.0
 ACC002,SHEMA,3500.0,SavingsAccount,ACTIVE,3.5,500.0
 ACC003,Bruce,6600.0,SavingsAccount,ACTIVE,3.5,500.0
-ACC004,Ange,5190.0,CheckingAccount,ACTIVE,1000.0,10.0
-ACC005,Peace,6490.0,CheckingAccount,ACTIVE,1000.0,10.0
-
-
+ACC004,Ange,5160.0,CheckingAccount,ACTIVE,1000.0,10.0
+ACC005,Peace,6460.0,CheckingAccount,ACTIVE,1000.0,10.0
+ACC006,alphonse,11570.0,CheckingAccount,ACTIVE,1000.0,10.0
