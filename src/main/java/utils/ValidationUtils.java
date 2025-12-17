@@ -54,18 +54,14 @@ public class ValidationUtils {
         }
     }
     // input for String
-    public String getStringInput(String prompt, String regex, String errorMsg) {
+    public String getStringInput(String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
-                System.out.println("This field cannot be empty.");
-            }
-            else if (!input.matches(regex)) {
-                System.out.println(errorMsg);
-            }
-            else {
+                System.out.println("This field cannot be empty. Try again.");
+            } else {
                 return input;
             }
         }
