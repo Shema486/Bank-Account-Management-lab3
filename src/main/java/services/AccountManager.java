@@ -9,69 +9,96 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-// Assuming 'modules.Account' and 'customers.RegularCustomer' exist,
-// though RegularCustomer is not used here.
+/**
+ * Service class to manage bank accounts.
+ * Provides functionality to add, find, view, calculate totals,
+ * and persist accounts to a file.
+ */
+public class AccountManager {
 
-public class AccountManager  {
-
-    // Composition: Holds a List of Account objects (Good use of abstraction!)
+    /** List that stores all Account objects in memory. */
     private List<Account> accounts;
 
+    /**
+     * Constructs a new AccountManager with an empty account list.
+     */
     public AccountManager() {
         this.accounts = new ArrayList<>();
     }
+
+    /**
+     * Adds a new account to the manager.
+     *
+     * @param newAccount the Account object to be added
+     */
     public void addAccount(Account newAccount) {
         this.accounts.add(newAccount);
     }
 
+    /**
+     * Finds an account by its account number.
+     *
+     * @param accountNumber the account number to search for
+     * @return the Account object if found, otherwise null
+     */
     public Account findAccount(String accountNumber) {
-        for (Account account : accounts) {
-            if (account.getAccountNumber().equalsIgnoreCase(accountNumber)) {
-                return account;
-            }
-        }
-        return null;
+        return accounts.stream()
+                .filter(a -> a.getAccountNumber().equalsIgnoreCase(accountNumber))
+                .findFirst()
+                .orElse(null);
     }
+
+    /**
+     * Calculates the total balance of all accounts.
+     *
+     * @return the sum of balances of all accounts
+     */
     public double getTotalBalance() {
-        double total = 0;
-        for (Account account : accounts) {
-            total += account.getBalance();
-        }
-        return total;
+        return accounts.stream()
+                .mapToDouble(Account::getBalance)
+                .sum();
     }
 
+    /**
+     * Displays all accounts in a formatted manner.
+     * Also prints the total number of accounts and total bank balance.
+     * Uses Stream API to iterate through accounts.
+     */
     public void viewAllAccounts() {
-
-        if (accounts.size() == 0) {
+        if (accounts.isEmpty()) {
             System.out.println("No accounts in the bank.");
             return;
         }
 
         System.out.println("----- All Bank Accounts -----");
 
-        for (Account account : accounts) {
-            if (account != null) {
-                account.displayAccountDetails();
-            }
-        }
+        accounts.stream()
+                .filter(account -> account != null)
+                .forEach(Account::displayAccountDetails);
+
         System.out.println("Total accounts: " + getTotalAccounts());
         System.out.println("Total Bank balance: $" + getTotalBalance());
     }
 
-    // Getter
+    /**
+     * Returns the total number of accounts managed.
+     *
+     * @return the count of accounts
+     */
     public int getTotalAccounts() {
         return accounts.size();
     }
+
+    /**
+     * Saves all accounts to a text file.
+     * Creates necessary directories if they do not exist.
+     */
     public void saveAccounts() {
         String filePath = "src/main/java/data/accounts.txt";
-
-        // 1. Define the File object and its Parent Directory
         File file = new File(filePath);
         File parentDir = file.getParentFile();
         try {
-
             if (parentDir != null && !parentDir.exists()) {
-                // mkdirs() creates the directory and any necessary parent directories
                 if (!parentDir.mkdirs()) {
                     System.out.println("Failed to create directory structure: " + parentDir.getAbsolutePath());
                     return;
@@ -88,10 +115,14 @@ public class AccountManager  {
         }
     }
 
+    /**
+     * Loads accounts from a text file and populates the internal list.
+     * Existing accounts are replaced by the loaded accounts.
+     * Filters out null accounts during loading.
+     */
     public void loadAccounts() {
         try {
-            // Example in AccountManager or TransactionManager
-            String filePath = "src/main/java/data/accounts.txt"; // Might work during development
+            String filePath = "src/main/java/data/accounts.txt";
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) return;
 
@@ -103,12 +134,9 @@ public class AccountManager  {
                             .toList()
             );
 
-
             System.out.println("Accounts loaded (text format).");
         } catch (Exception e) {
             System.out.println("Error loading accounts: " + e.getMessage());
         }
     }
-
-
 }
