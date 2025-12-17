@@ -44,14 +44,20 @@ public class SavingsAccount extends Account implements Serializable {
 
     @Override
     public synchronized boolean withdraw(double amount) {
-        if (balance - amount >= minimumBalance) {
-            balance -= amount;
-            return true;
-        } else {
-            throw new InsufficientFundException(
-                    "Withdrawal denied! Minimum balance $" + minimumBalance + " must be maintained."
-            );
+        try {
+            if (balance - amount >= minimumBalance) {
+                balance -= amount;
+                return true;
+            } else {
+                System.out.println("Insufficient Fund please try again");
+                return false;
+            }
+
+        } catch (InsufficientFundException e) {
+            System.out.println("Insufficient Fund please try again" + e.getMessage());
+            return false;
         }
+
     }
 
     public double calculateInterestEarned() {
