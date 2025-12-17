@@ -44,7 +44,7 @@ public class Main {
                         consoleMenu.handleSaveLoad();
                         break;
                     case 5:
-                        System.out.println("Run concurrency");
+                        functions.runConcurrentSimulation();
                         break;
                     case 6:
                         System.out.println("\nThank you for using the Bank Account Management System. Goodbye!");
