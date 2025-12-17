@@ -6,65 +6,72 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-// Import the Transaction class correctly based on your package structure
+
 import modules.Transaction;
 
 public class TransactionManager  {
-    //  Depend on the List abstraction, not the concrete array/ArrayList.
-    // This is the High-Level Module depending on Abstraction.
     private  List<Transaction> transactions;
 
-    public TransactionManager() {
-        // Initialize with a concrete implementation (ArrayList)
-        this.transactions = new ArrayList<>();
-    }
+    /**
+     * ADD transaction
+     */
+    public TransactionManager() {this.transactions = new ArrayList<>();}
 
-    // SRP: Responsibility is purely adding the transaction object.
-    // Array size checking is now handled automatically by the List.
+
+    /**
+     * this is the synchronized method
+     * @param newTransaction
+     */
     public synchronized void addTransaction(Transaction newTransaction) {
-        this.transactions.add(newTransaction);
-    }
+        this.transactions.add(newTransaction);}
 
+    /**
+     * @param accountNumber
+     * @param requiredType
+     * @return method calculate total
+     */
     // --- Methods for Reporting and Testing ---
     private double calculateTotal(String accountNumber, String requiredType) {
-        double total = 0.0;
-        for (Transaction t : this.transactions) {
-            // Robust check: Ignore case for type and account number.
-            if (t.getAccountNumber().equalsIgnoreCase(accountNumber) &&
-                    t.getType().equalsIgnoreCase(requiredType)) {
-                total += t.getAmount();
-            }
-        }
-        return total;
+        return transactions.stream()
+                .filter(t ->
+                        t.getAccountNumber().equalsIgnoreCase(accountNumber) &&
+                                t.getType().equalsIgnoreCase(requiredType)
+                )
+                .mapToDouble(Transaction::getAmount)
+                .sum();
     }
 
-    // Public methods for external access
-    // These methods now call the single private helper function.
+
+    /**
+     * @param accountNumber
+     * @return double totalWithdraw
+     */
     public double calculateTotalWithdraw(String accountNumber) {
-        // Renamed to be consistent with the test class, ensures correctness
         return calculateTotal(accountNumber, "WITHDRAW");
     }
 
+    /**
+     * @param accountNumber
+     * @return double  totalDeposit
+     */
     public double calculateTotalDeposit(String accountNumber) {
-        // Renamed to be consistent with the test class
         return calculateTotal(accountNumber, "DEPOSIT");
     }
 
-    // --- Data Retrieval (Better for SRP than printing) ---
+
+    /**
+     * @param accountNumber
+     * @return Object transaction
+     */
     public List<Transaction> getTransactionsByAccount(String accountNumber) {
-        List<Transaction> accountHistory = new ArrayList<>();
-        // Iterate through all transactions and collect only the relevant ones
-        for (Transaction t : this.transactions) {
-            if (t.getAccountNumber().equalsIgnoreCase(accountNumber)) {
-                accountHistory.add(t);
-            }
-        }
-        // Return the data; the calling class (e.g., Main) handles the output.
-        return accountHistory;
+        return transactions.stream()
+                .filter(t -> t.getAccountNumber().equalsIgnoreCase(accountNumber))
+                .toList();
     }
-
-
-    // Method for US-4 (View Transaction History)
+    /**
+     * @param accountNumber
+     *
+     */
     public void viewTransactionsByAccount(String accountNumber) {
         // 1. SRP: Get the filtered data first.
         List<Transaction> history = getTransactionsByAccount(accountNumber);
@@ -78,8 +85,7 @@ public class TransactionManager  {
         if (history.isEmpty()) {
             System.out.println("| NO TRANSACTIONS FOUND for account " + accountNumber + ".");
         } else {
-            // 2. DSA & Efficiency: Iterate over the filtered 'history' List,
-            //    going backward to show newest transactions first.
+
             for (int i = history.size() - 1; i >= 0; i--) {
                 history.get(i).displayTransactionDetails();
             }
@@ -87,7 +93,7 @@ public class TransactionManager  {
 
         System.out.println("------------------------------------------------------------------------------------");
 
-        // 3. Display Summary (Uses dedicated, testable helper methods)
+
         double totalDeposits = calculateTotalDeposit(accountNumber);
         double totalWithdrawals = calculateTotalWithdraw(accountNumber);
         double netChange = totalDeposits - totalWithdrawals;
@@ -97,6 +103,9 @@ public class TransactionManager  {
         System.out.println("------------------------------------------------------------------------------------");
     }
 
+    /**
+     * @return integer number of transactions have been generated
+     */
     public int getTransactionCount() {
         return this.transactions.size();}
     public void saveTransaction() {
