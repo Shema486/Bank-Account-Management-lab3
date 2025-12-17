@@ -162,8 +162,7 @@ public class Functions {
             System.out.println("Error: Source Account not found.");
             return;
         }
-        // 2. Get Target Account
-        // System.out.print("Enter TARGET Account Number (To): ");
+
         String targetAccNum = validationUtils.getStringInput("Enter TARGET Account Number (To):(e.g ACC002) ","^ACC\\d{3}$", "Invalid account number format.");
         Account targetAccount = accountManager.findAccount(targetAccNum);
 
@@ -176,7 +175,7 @@ public class Functions {
             System.out.println("Error: Cannot transfer funds to the same account.");
             return;
         }
-        // 3. Get Amount
+
 //        System.out.print("Enter Transfer Amount: $");
         double transferAmount = validationUtils.getDoubleInput("Enter Transfer Amount: $",500); // Assumes your helper method for input validation
 
@@ -191,31 +190,24 @@ public class Functions {
             // Withdrawal successful, now process deposit
             System.out.println("Withdrawal successful. Processing deposit to target...");
 
-            // Deposit will almost always succeed unless amount is negative (already checked)
             if (targetAccount.deposit(transferAmount)) {
-                // --- 5. RECORD TRANSACTIONS ---
 
-                // Record Withdrawal Transaction
-                Transaction withdrawalTxn = new Transaction(sourceAccNum, "WITHDRAW", transferAmount, sourceAccount.getBalance());
-                transactionManager.addTransaction(withdrawalTxn);
+                Transaction withdrawal = new Transaction(sourceAccNum, "WITHDRAW", transferAmount, sourceAccount.getBalance());
+                transactionManager.addTransaction(withdrawal);
 
                 // Record Deposit Transaction
-                Transaction depositTxn = new Transaction(targetAccNum, "DEPOSIT", transferAmount, targetAccount.getBalance());
-                transactionManager.addTransaction(depositTxn);
+                Transaction deposit = new Transaction(targetAccNum, "DEPOSIT", transferAmount, targetAccount.getBalance());
+                transactionManager.addTransaction(deposit);
 
                 System.out.printf("\nSUCCESS: Transfer of $%,.2f complete.\n", transferAmount);
                 System.out.printf("  Source Balance (%s): %s\n", sourceAccNum, sourceAccount.getBalance());
                 System.out.printf("  Target Balance (%s): %s\n", targetAccNum, targetAccount.getBalance());
 
             } else {
-                // This should ideally never happen for a positive amount, but handles exceptions
                 System.out.println("Withdrawal succeeded, but deposit failed. Balance restored.");
-                // In a real system, you would Roll back the withdrawal here.
-                // For simplicity, we assume the deposit success.
-                sourceAccount.deposit(transferAmount); // Rollback attempt
+                sourceAccount.deposit(transferAmount);
             }
         } else {
-            // Withdrawal failed due to insufficient funds, minimum balance, or overdraft limit
             System.out.println("TRANSFER FAILED: Withdrawal from source account was rejected (Check account rules/limits).");
         }
     }
