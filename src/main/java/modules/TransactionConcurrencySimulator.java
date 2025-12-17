@@ -1,28 +1,57 @@
 package modules;
 
-public class TransactionConcurrencySimulator implements Runnable{
-    private  Account account;
-    private String type;
-    private double amount;
+import services.TransactionManager;
 
-    public TransactionConcurrencySimulator(Account account, double amount, String type) {
+public class TransactionConcurrencySimulator implements Runnable {
+
+    private final Account account;
+    private final TransactionType type;
+    private final double amount;
+    private final TransactionManager transactionManager;
+
+    public TransactionConcurrencySimulator(Account account,
+                                           double amount,
+                                           TransactionType type,
+                                           TransactionManager transactionManager) {
         this.account = account;
         this.amount = amount;
         this.type = type;
+        this.transactionManager = transactionManager;
     }
 
     @Override
     public void run() {
         try {
-            if(type.equalsIgnoreCase("DEPOSIT")){
-                System.out.println(Thread.currentThread().getName() + ":Depositing $" + amount);
-                account.deposit(amount);
-            } else if (type.equalsIgnoreCase("Withdraw")) {
-                System.out.println(Thread.currentThread().getName() + ":Withdrawing $" + amount);
-                account.withdraw(amount);
+            synchronized (account) {
+
+                switch (type) {
+                    case DEPOSIT -> {
+                        account.deposit(amount);
+                        System.out.println(
+                                Thread.currentThread().getName()
+                                        + ": Deposited $" + amount
+                        );
+                    }
+                    case WITHDRAW -> {
+                        account.withdraw(amount);
+                        System.out.println(
+                                Thread.currentThread().getName()
+                                        + ": Withdrew $" + amount
+                        );
+                    }
+                }
+
+                transactionManager.addTransaction(new Transaction(
+                                account.getAccountNumber(),
+                                type.name(),
+                                amount,
+                                account.getBalance())
+                );
             }
         } catch (Exception e) {
-            System.out.println(Thread.currentThread() + ":" + e.getMessage());
+            System.out.println(
+                    Thread.currentThread().getName() + ": " + e.getMessage()
+            );
         }
     }
 }
