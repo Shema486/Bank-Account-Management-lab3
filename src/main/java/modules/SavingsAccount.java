@@ -13,8 +13,14 @@ public class SavingsAccount extends Account implements Serializable {
     // Constructor for NEW accounts
     public SavingsAccount(Customer customer, double balance) {
         super(customer, balance);
-        this.interestRate = 3.5;
-        this.minimumBalance = 500;
+        // GOOD: Set rates ONCE during creation
+        if (customer instanceof PremiumCustomer) {
+            this.interestRate = 5.0;
+            this.minimumBalance = 100;
+        } else {
+            this.interestRate = 3.5;
+            this.minimumBalance = 500;
+        }
     }
 
     // Constructor for loading from files
