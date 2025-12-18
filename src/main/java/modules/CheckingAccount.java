@@ -2,6 +2,7 @@ package modules;
 
 import exceptions.OverdraftExceededException;
 
+
 import java.io.Serializable;
 
 public class CheckingAccount extends Account implements Serializable {
@@ -53,10 +54,15 @@ public class CheckingAccount extends Account implements Serializable {
         return true;
     }
 
-    public double applyMonthlyFee() {
+    public String applyMonthlyFee() {
+        if (getCustomer() instanceof PremiumCustomer &&
+                ((PremiumCustomer)getCustomer()).hasWaivedFees()) {
+            return "No fee for premium $" +balance;
+        }
         balance -= monthlyFee;
-        return balance;
+        return "fee for Regular $" + balance;
     }
+
 
     @Override
     public String toString() {
